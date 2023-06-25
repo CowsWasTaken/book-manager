@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+
+class BrightnessButton extends StatelessWidget {
+  final bool showTooltipBelow;
+
+  final void Function(bool useLightMode) handleBrightnessChange;
+
+  const BrightnessButton({
+    super.key,
+    this.showTooltipBelow = true,
+    required this.handleBrightnessChange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isBright = Theme.of(context).brightness == Brightness.light;
+    return Tooltip(
+      preferBelow: showTooltipBelow,
+      message: 'Toggle brightness',
+      child: IconButton(
+        icon: isBright
+            ? const Icon(Icons.dark_mode_outlined)
+            : const Icon(Icons.light_mode_outlined),
+        onPressed: () => handleBrightnessChange(!isBright),
+      ),
+    );
+  }
+}
