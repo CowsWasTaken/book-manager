@@ -1,22 +1,22 @@
-import 'package:book_manager/typography_screen.dart';
+import 'package:bookmanager/src/authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'BrightnessButton.dart';
 import 'ColorSeedButton.dart';
-import 'color_palettes_screen.dart';
-import 'component_screen.dart';
+import 'app_state.dart';
 import 'constants.dart';
-import 'elevation_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage(
       {super.key,
-        required this.title,
-        required this.useLightMode,
-        required this.colorSelected,
-        required this.colorSelectionMethod,
-        required this.handleBrightnessChange,
-        required this.handleColorSelect});
+      required this.title,
+      required this.useLightMode,
+      required this.colorSelected,
+      required this.colorSelectionMethod,
+      required this.handleBrightnessChange,
+      required this.handleColorSelect});
 
   final String title;
   final bool useLightMode;
@@ -33,29 +33,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  int _selectedPageIndex = 0;
+
   int _counter = 0;
 
   int screenIndex = ScreenSelected.component.value;
-
 
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
-  }
-
-  Widget createScreenFor(
-      ScreenSelected screenSelected, bool showNavBarExample) {
-    switch (screenSelected) {
-      case ScreenSelected.component:
-        return componentText();
-      case ScreenSelected.color:
-        return const ColorPalettesScreen();
-      case ScreenSelected.typography:
-        return const TypographyScreen();
-      case ScreenSelected.elevation:
-        return const ElevationScreen();
-    }
   }
 
   Widget componentText() {
@@ -68,10 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Text(
             '$_counter',
-            style: Theme
-                .of(context)
-                .textTheme
-                .headlineMedium,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         ],
       ),
@@ -81,30 +65,90 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          Flexible(
-              child: BrightnessButton(
-                handleBrightnessChange: widget.handleBrightnessChange,
-              )),
-          Flexible(
-              child: ColorSeedButton(
-                  colorSelected: widget.colorSelected,
-                  colorSelectionMethod: widget.colorSelectionMethod,
-                  handleColorSelect: widget.handleColorSelect))
-        ],
-      ),
-      body: FirstComponentList(
-        scaffoldKey: scaffoldKey,
-        showNavBottomBar: true,
-        showSecondList: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        appBar: AppBar(
+          title: Text(widget.title),
+          actions: [
+            Flexible(
+                child: BrightnessButton(
+              handleBrightnessChange: widget.handleBrightnessChange,
+            )),
+            Flexible(
+                child: ColorSeedButton(
+                    colorSelected: widget.colorSelected,
+                    colorSelectionMethod: widget.colorSelectionMethod,
+                    handleColorSelect: widget.handleColorSelect))
+          ],
+        ),
+        body: Column(
+          children: [
+            Consumer<ApplicationState>(
+              builder: (context, appState, _) => AuthFunc(
+                  loggedIn: appState.loggedIn,
+                  signOut: () {
+                    FirebaseAuth.instance.signOut();
+                  }),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 20,
+                // Zum Beispiel: Setzen Sie dies auf die tatsächliche Anzahl der Elemente, die Sie anzeigen möchten
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Card(
+                        color: Theme.of(context).cardColor,
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.abc,
+                            size: 50,
+                          ),
+                          title: Text('Item $index'),
+                          subtitle: Text('Subtitle for $index'),
+                          // Fügen Sie hier zusätzliche Felder wie Untertitel, führende und nachfolgende Widgets hinzu, je nach Bedarf
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        ),
+        bottomNavigationBar:
+            getNavbar() // This trailing comma makes auto-formatting nicer for build methods.
+        );
+  }
+
+  getNavbar() {
+    return NavigationBar(
+      selectedIndex: _selectedPageIndex,
+      onDestinationSelected: (int index) {
+        setState(() {
+          _selectedPageIndex = index;
+        });
+      },
+      destinations: const <NavigationDestination>[
+        NavigationDestination(
+          selectedIcon: Icon(Icons.bookmark),
+          icon: Icon(Icons.bookmark_border),
+          label: 'For Later',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.library_books),
+          icon: Icon(Icons.library_books_outlined),
+          label: 'Reading',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.task),
+          icon: Icon(Icons.task_outlined),
+          label: 'Done',
+        ),
+      ],
     );
   }
 }

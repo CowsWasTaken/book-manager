@@ -37,7 +37,7 @@ class ColorSeedButton extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10),
                   child: Icon(
                     currentColor == colorSelected &&
-                            colorSelectionMethod != ColorSelectionMethod.image
+                            colorSelectionMethod == ColorSelectionMethod.colorSeed
                         ? Icons.color_lens
                         : Icons.color_lens_outlined,
                     color: currentColor.color,

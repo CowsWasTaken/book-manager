@@ -1,4 +1,4 @@
-package com.cows.are.beautiful.book_manager
+package com.cowsarebeautiful.bookmanager
 
 import io.flutter.embedding.android.FlutterActivity
 

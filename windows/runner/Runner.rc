@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.cows.are.beautiful" "\0"
-            VALUE "FileDescription", "book_manager" "\0"
+            VALUE "CompanyName", "com.cowsarebeautiful" "\0"
+            VALUE "FileDescription", "bookmanager" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "book_manager" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.cows.are.beautiful. All rights reserved." "\0"
-            VALUE "OriginalFilename", "book_manager.exe" "\0"
-            VALUE "ProductName", "book_manager" "\0"
+            VALUE "InternalName", "bookmanager" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.cowsarebeautiful. All rights reserved." "\0"
+            VALUE "OriginalFilename", "bookmanager.exe" "\0"
+            VALUE "ProductName", "bookmanager" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
